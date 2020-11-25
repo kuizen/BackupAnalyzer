@@ -10,6 +10,7 @@ def parse_backuplog(logfile):
 	warning = []
 	error = []
 	last_msg =""
+
 	if not os.path.isfile(logfile):
 		error.append(logfile +' not a file')
 	elif os.stat(logfile).st_size == 0:
@@ -24,9 +25,9 @@ def parse_backuplog(logfile):
 						error.append(match.group(3))
 					if match.group(1).upper() == 'WARNING':
 						warning.append(match.group(3))
-	if(len(error) != 0):	
+	if len(error) != 0 :	
 		last_msg = error[0]
-	elif(len(error) == 0 and len(warning) != 0):
+	elif len(error) == 0 and len(warning) != 0:
 		last_msg = warning[0]
 	else:
 		last_msg = " check OK"

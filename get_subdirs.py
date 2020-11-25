@@ -65,7 +65,6 @@ if __name__ == '__main__':
 		level = it[1].get('level')
 		message = it[1].get('message')
 		print(level, source_host, message)
-#		syslog_handler.send_syslog(syslog,514,level, source_host,message)
 
 
 
