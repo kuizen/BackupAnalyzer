@@ -46,9 +46,9 @@ def scan_backup(path):
 			else:
 				bac = backuplog.parse_backuplog(subfolders[0][1]+'/backup.log')
 				level = ""
-				if bac['error_count'] != 0:
+				if bac['err_count'] != 0:
 					level = 'ERROR'
-				elif bac['warnings_count'] !=0:
+				elif bac['warn_count'] !=0:
 					level = 'WARNING'
 				else:
 					level = 'INFO'

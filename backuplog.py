@@ -5,25 +5,32 @@ import os
 import json
 import sys
 
-version = 1
-warning = []
-error = []
-
 def parse_backuplog(logfile):
+	version = 1
+	warning = []
+	error = []
+	last_msg =""
 	if not os.path.isfile(logfile):
-		exit(logfile +' not a file')
- 
-	with io.open(logfile,'r') as f:
-		for line in reversed(list(f)):
-			match = re.search('^(error|warning):(\w+):(.*)', line, re.IGNORECASE)
-			if match:	
-				if match.group(1).upper() == 'ERROR':
-					error.append(match.group(3))
-				if match.group(1).upper() == 'WARNING':
-					warning.append(match.group(3))	
-	output = {'version': version,
-		  'error_count':len(error),
-		'warnings_count':len(warning)}
+		error.append(logfile +' not a file')
+	elif os.stat(logfile).st_size == 0:
+		error.append(logfile + ' is empty')
+	else:
+
+		with io.open(logfile,'r') as f:
+			for line in reversed(list(f)):
+				match = re.search('^(error|warning):(\w+):(.*)', line, re.IGNORECASE)
+				if match:	
+					if match.group(1).upper() == 'ERROR':
+						error.append(match.group(3))
+					if match.group(1).upper() == 'WARNING':
+						warning.append(match.group(3))
+	if(len(error) != 0):	
+		last_msg = error[0]
+	elif(len(error) == 0 and len(warning) != 0):
+		last_msg = warning[0]
+	else:
+		last_msg = " check OK"
+	output = {'err_count':len(error),'warn_count':len(warning),'last_msg': last_msg}
 #	return json.dumps(output)
 	return output
 
