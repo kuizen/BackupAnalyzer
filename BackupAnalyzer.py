@@ -3,6 +3,7 @@
 import syslog_handler
 import get_subdirs
 import time
+from datetime import datetime
 
 path ='/backup'
 syslog = '192.168.224.74'
@@ -15,3 +16,6 @@ for item in messages.items():
 
 	print(level, source_host, message)
 	syslog_handler.send_syslog(syslog,514,level, source_host,message)
+now = datetime.now()
+dt = now.strftime("%d/%m/%Y %H:%M:%S")
+print("Backup Analyze ended at: " + dt)
