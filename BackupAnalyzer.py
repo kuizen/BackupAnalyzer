@@ -19,3 +19,4 @@ for item in messages.items():
 now = datetime.now()
 dt = now.strftime("%d/%m/%Y %H:%M:%S")
 print("Backup Analyze ended at: " + dt)
+print("---------------------------------------------------------------")

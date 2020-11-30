@@ -26,23 +26,23 @@ def scan_backup(path):
 	messages = {}
 	for dirs in list_servers:
 		server_name= os.path.basename(dirs)	
-		subfolders = [(os.stat(f.path).st_ctime,f.path) for f in os.scandir(dirs) if f.is_dir() and re.search('.*\/\d{8}_\d{6}\.\d{1,3}',f.path)]
+		subfolders = [(os.stat(f.path).st_mtime,f.path) for f in os.scandir(dirs) if f.is_dir() and re.search('.*\/\d{8}_\d{6}\.\d{1,3}',f.path)]
 		subfolders.sort(key =lambda x: x[0], reverse = True) #now we sort subfolders for creation datetime parameter or name(should be same) and try get most recent
 
 		if len(subfolders) == 0:
 			#some error report that folder is empty
-      			#print(server_name, 'ERROR: ',' is empty, no backup')
 			messages[server_name] = {'level':'ERROR','message':'is empty, no backup found'}
 		else:
 			if len(subfolders) >= 2:
+				print(subfolders[0][1] + " " +str(time.ctime(subfolders[0][0])) +" || " + subfolders[1][1] + " " + str(time.ctime(subfolders[1][0])))
 				backup_interval = subfolders[0][0] - subfolders[1][0]
 			else:
 				backup_interval = 86400; 		#if there is only 1 backup directory we compare with const value, now its 24h
 		
 			last_bkp = time.time() - subfolders[0][0]
-			if last_bkp > backup_interval:			
-				messages[server_name] = {'level':'ERROR', 'message':'backup is too old'}
-			#	print(server_name,'ERROR backup too old ','Current time: ',time.time(), 'Time between now and last backup: ',last_bkp, 'Backup interval: ',backup_interval)		
+			if last_bkp > backup_interval:	
+				temp_msg = "backup is too old. Time from last bkp: "+str(int(last_bkp))+" s. Backup interval: "+ str(int(backup_interval)) + " s."
+				messages[server_name] = {'level':'ERROR', 'message':temp_msg}
 			else:
 				bac = backuplog.parse_backuplog(subfolders[0][1]+'/backup.log')
 				level = ""
@@ -53,8 +53,6 @@ def scan_backup(path):
 				else:
 					level = 'INFO'
 				messages[server_name] = {'level':level, 'message':'backup folder is up to date, analyzing backup.log: '+json.dumps(bac)}
-			#	print(server_name,'INFO, backup is up to date ','Current time: ',time.time(), 'Time between now and last backup: ',last_bkp, 'Backup interval: ',backup_interval)
-			#	print(backuplog))  #check for backup.log from most recent backup_subfolder
 	return messages	
 
 if __name__ == '__main__':
