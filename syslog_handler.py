@@ -24,8 +24,8 @@ def send_syslog(syslogserver,port,level, source_host, message):
 		logger.info(source_host +" "+ message)
 
 if __name__ == '__main__':
-	h = '192.168.224.74'
-	port = 514
-	hname = 'kiet2-cs-sdp1a'
+	h = '192.168.1.73'
+	port = 48654
+	hname = 'test-message'
 	message = 'backup folder is up to date, analyzing backup.log: {"version": 1, "error_count": 2, "warnings_count": 3}'
-	send_syslog(h,514,'WARNING',hname,message)
+	send_syslog(h,port,'WARNING',hname,message)

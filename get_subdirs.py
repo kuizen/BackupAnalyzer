@@ -5,11 +5,23 @@ import os,sys,time,re,datetime
 import backuplog
 import json
 
+#####
+#we had duplicates backups, which where made for test purposes. As its not needed to be analyzed, here is black list
+ignorelist =  open('ignoredirs.cfg','r').read().splitlines()
+def FolderIsInIgnoreList(path):
+	for line in ignorelist:
+		if re.search(line, path):
+			print(path + " is in ignore list " + line)
+			return True
+	return False
+#####
+
 #recursively get dir tree starting from dir_path
 def fast_scandir(dir_path):
 	subfolders = [f.path for f in os.scandir(dir_path) if f.is_dir()]
 	for directory in list(subfolders):
-		subfolders.extend(fast_scandir(directory))
+		if not FolderIsInIgnoreList(directory):
+			subfolders.extend(fast_scandir(directory))
 	return subfolders
 
 
@@ -34,7 +46,6 @@ def scan_backup(path):
 			messages[server_name] = {'level':'ERROR','message':'is empty, no backup found'}
 		else:
 			if len(subfolders) >= 2:
-				print(subfolders[0][1] + " " +str(time.ctime(subfolders[0][0])) +" || " + subfolders[1][1] + " " + str(time.ctime(subfolders[1][0])))
 				backup_interval = subfolders[0][0] - subfolders[1][0]
 			else:
 				backup_interval = 86400; 		#if there is only 1 backup directory we compare with const value, now its 24h
@@ -57,7 +68,6 @@ def scan_backup(path):
 
 if __name__ == '__main__':
 	path ='/backup'
-	syslog = '192.168.224.74'
 	for it in scan_backup(path).items():
 		source_host = it[0]
 		level = it[1].get('level')
