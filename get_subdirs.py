@@ -5,6 +5,12 @@ import os,sys,time,re,datetime
 import backuplog
 import json
 
+def GetTime(seconds):
+        sec = datetime.timedelta(seconds=int(seconds))
+        d = datetime.datetime(1,1,1)+sec
+        result = str("%dd %dh %dmin %ds" %(d.day-1, d.hour, d.minute, d.second))
+        return result
+
 #####
 #we had duplicates backups, which where made for test purposes. As its not needed to be analyzed, here is black list
 ignorelist =  open('ignoredirs.cfg','r').read().splitlines()
@@ -52,7 +58,7 @@ def scan_backup(path):
 		
 			last_bkp = time.time() - subfolders[0][0]
 			if last_bkp > backup_interval:	
-				temp_msg = "backup is too old. Time from last bkp: "+str(int(last_bkp))+" s. Backup interval: "+ str(int(backup_interval)) + " s."
+                                temp_msg = "backup is too old. Time from last bkp: "+GetTime(last_bkp)+" . Backup interval: "+ GetTime(backup_interval)
 				messages[server_name] = {'level':'ERROR', 'message':temp_msg}
 			else:
 				bac = backuplog.parse_backuplog(subfolders[0][1]+'/backup.log')
