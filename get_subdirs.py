@@ -7,8 +7,8 @@ import json
 
 def GetTime(seconds):
         sec = datetime.timedelta(seconds=int(seconds))
-        d = datetime.datetime(1,1,1)+sec
-        result = str("%dd %dh %dmin %ds" %(d.day-1, d.hour, d.minute, d.second))
+        d = datetime.datetime(1,1,1,1)+sec
+        result = str("%dm %dd %dh %dmin %ds" %(d.month-1, d.day, d.hour, d.minute, d.second))
         return result
 
 #####
