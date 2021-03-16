@@ -35,7 +35,7 @@ def main():
         send_messages(rmc_errors)
     print("RMC done ---------------------------------------------------------------")
 
-    dt = datetime.now.strftime("%d/%m/%Y %H:%M:%S")
+    dt = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     print("Backup Analyze ended at: " + dt)
     return True
 
