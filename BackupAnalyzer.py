@@ -18,8 +18,6 @@ rmc_servers = [ "###-rmc1", "###-rmc2" ]
 login = "libre"
 password = "####"
 ##
-now = datetime.now()
-dt = now.strftime("%d/%m/%Y %H:%M:%S")
 
 def send_messages(messages):
     for item in messages:
@@ -37,6 +35,7 @@ def main():
         send_messages(rmc_errors)
     print("RMC done ---------------------------------------------------------------")
 
+    dt = datetime.now.strftime("%d/%m/%Y %H:%M:%S")
     print("Backup Analyze ended at: " + dt)
     return True
 
