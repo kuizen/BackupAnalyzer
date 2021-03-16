@@ -164,7 +164,3 @@ if __name__ == '__main__':
 		level = it[1].get('level')
 		message = it[1].get('message')
 		print(level, source_host, message)
-
-
-
->>>>>>> c61d01964afed6687a794868768bfea02ea98de8
