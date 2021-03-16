@@ -78,5 +78,3 @@ if __name__ == '__main__':
         for it in scan_backup(path):
                 source_host, level, message = it
                 print(level, source_host, message)
-
-
