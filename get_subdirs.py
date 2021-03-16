@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #!/usr/bin/env python3
 
 from stat import S_ISREG, ST_CTIME, ST_MODE
