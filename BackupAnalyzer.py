@@ -3,20 +3,49 @@
 import syslog_handler
 import get_subdirs
 import time
+import rmc
 from datetime import datetime
 
-path ='/backup'
-syslog = '192.168.224.74'
+##NFS scan config
+path ='/mnt/auto/StoreOnce-NFS/'
 
-messages = get_subdirs.scan_backup(path)
-for item in messages.items():
-	source_host = str(item[0])
-	level = str(item[1].get('level'))
-	message = str(item[1].get('message'))
 
-	print(level, source_host, message)
-	syslog_handler.send_syslog(syslog,514,level, source_host,message)
+##Remote syslog server
+syslog = '10.29.101.11'
+
+## RMC config section
+rmc_servers = [ "###-rmc1", "###-rmc2" ]
+login = "libre"
+password = "####"
+##
 now = datetime.now()
 dt = now.strftime("%d/%m/%Y %H:%M:%S")
-print("Backup Analyze ended at: " + dt)
-print("---------------------------------------------------------------")
+
+def send_messages(messages):
+    for item in messages:
+        source_host, level ,message = item
+        print(level, source_host, message)
+        syslog_handler.send_syslog(syslog,48654,level, source_host,message) #48654 - port on which librenms_syslog listens
+
+def main():
+    nfs_messages = get_subdirs.scan_backup(path)
+    send_messages(nfs_messages)
+    print("NFS Done ---------------------------------------------------------------")
+
+    for source_host in rmc_servers:
+        rmc_errors = rmc.get_failed_tasks(source_host, login, password)
+        send_messages(rmc_errors)
+    print("RMC done ---------------------------------------------------------------")
+
+    print("Backup Analyze ended at: " + dt)
+    return True
+
+if __name__ == '__main__':
+    try:
+        main()
+    except KeyboardInterrupt:
+        print('Bye-Bye...')
+        try:
+            sys.exit(0)
+        except SystemExit:
+            os._exit(0)
